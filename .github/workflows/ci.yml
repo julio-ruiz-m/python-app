@@ -48,8 +48,9 @@ jobs:
       - name: Scan image
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: $ECR_REPO:${{ github.sha }}
+          image-ref: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.ECR_REPO }}:${{ github.sha }}
           severity: CRITICAL,HIGH
+          vuln-type: os,library
           exit-code: 1
 
       - name: Tag & push
