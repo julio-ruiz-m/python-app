@@ -13,6 +13,7 @@ env:
   AWS_ACCOUNT_ID = 512897090915
   AWS_REGION     = us-east-1
   ECR_REPO       = python-app
+  
 
 jobs:
   test:
