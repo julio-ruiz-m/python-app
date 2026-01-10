@@ -1,0 +1,61 @@
+name: app-ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPO: python-app
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+      - run: pytest
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/github-ecr-push
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build image
+        run: |
+          docker build -t $ECR_REPO:${{ github.sha }} .
+
+      - name: Scan image
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: $ECR_REPO:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          exit-code: 1
+
+      - name: Tag & push
+        run: |
+          docker tag $ECR_REPO:${{ github.sha }} \
+            <ACCOUNT_ID>.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:${{ github.sha }}
+
+          docker push \
+            <ACCOUNT_ID>.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:${{ github.sha }}
