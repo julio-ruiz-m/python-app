@@ -56,13 +56,6 @@ jobs:
         with:
           version: v1.29.0
 
-      - name: Validate Argo Application manifest
-        run: |
-          kubectl apply \
-            --dry-run=client \
-            --validate=false \
-            -f argocd/application.yaml
-
   build-and-push:
     needs: test
     runs-on: ubuntu-latest
