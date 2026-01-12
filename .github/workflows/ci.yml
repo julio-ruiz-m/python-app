@@ -77,9 +77,14 @@ jobs:
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+        
       - name: Build image
         run: |
-          docker build -t $ECR_REPO:${{ github.sha }} .
+          docker build \
+            -t $ECR_REPO:latest \
+            -t $ECR_REPO:${{ github.sha }} \
+            .
+
 
       -  name: Scan image (local)
          uses: aquasecurity/trivy-action@0.20.0
@@ -89,10 +94,14 @@ jobs:
            vuln-type: os,library
            exit-code: 1
 
+
+
       - name: Tag & push
         run: |
-          docker tag $ECR_REPO:${{ github.sha }} \
-           ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:${{ github.sha }}
+          for tag in latest ${{ github.sha }}; do
+            docker tag $ECR_REPO:$tag \
+              ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:$tag
 
-          docker push \
-            ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:${{ github.sha }}
+            docker push \
+              ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/$ECR_REPO:$tag
+          done
