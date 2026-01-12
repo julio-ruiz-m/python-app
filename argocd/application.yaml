@@ -4,26 +4,13 @@ metadata:
   name: python-app
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: |
-      python-app=512897090915.dkr.ecr.us-east-1.amazonaws.com/python-app
-    
-    # Use 'newest-build' strategy which picks the newest by timestamp
+    argocd-image-updater.argoproj.io/image-list: python-app=512897090915.dkr.ecr.us-east-1.amazonaws.com/python-app
     argocd-image-updater.argoproj.io/python-app.update-strategy: newest-build
-    
-    # Allow tags matching commit SHAs (40 hex characters)
     argocd-image-updater.argoproj.io/python-app.allow-tags: regexp:^[a-f0-9]{40}$
-    
-    argocd-image-updater.argoproj.io/write-back-method: git
-    
     argocd-image-updater.argoproj.io/python-app.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/python-app.helm.image-tag: image.tag
-    
-    argocd-image-updater.argoproj.io/git-commit-message: |
-      chore(image): update python-app image
-
 spec:
   project: default
-
   source:
     repoURL: https://github.com/julio-ruiz-m/python-app
     targetRevision: main
@@ -31,11 +18,9 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-
   destination:
     server: https://kubernetes.default.svc
     namespace: python-app
-
   syncPolicy:
     automated:
       prune: true
