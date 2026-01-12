@@ -14,7 +14,7 @@ metadata:
 
   argocd-image-updater.argoproj.io/python-app.helm.image-name: image.repository
   argocd-image-updater.argoproj.io/python-app.helm.image-tag: image.tag
-
+  argocd-image-updater.argoproj.io/python-app.registry-type: ecr
   argocd-image-updater.argoproj.io/git-commit-message: |
     chore(image): update python-app image
 
