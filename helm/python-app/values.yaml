@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: 512897090915.dkr.ecr.us-east-1.amazonaws.com/python-app
-  tag: "latest"
+  tag: "sha-placeholder"
   pullPolicy: IfNotPresent
 
 service:

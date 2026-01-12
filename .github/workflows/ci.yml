@@ -40,7 +40,6 @@ jobs:
         with:
           version: v3.14.4
 
-
       - name: Helm lint
         run: |
           helm lint helm/python-app
@@ -75,7 +74,6 @@ jobs:
       - name: Build image
         run: |
           docker build \
-            -t $ECR_REPO:latest \
             -t $ECR_REPO:${{ github.sha }} \
             .
 
