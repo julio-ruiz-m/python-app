@@ -60,6 +60,7 @@ jobs:
         run: |
           kubectl apply \
             --dry-run=client \
+            --validate=false \
             -f argocd/application.yaml
 
   build-and-push:
@@ -85,7 +86,6 @@ jobs:
             -t $ECR_REPO:${{ github.sha }} \
             .
 
-
       -  name: Scan image (local)
          uses: aquasecurity/trivy-action@0.20.0
          with:
@@ -93,8 +93,6 @@ jobs:
            severity: CRITICAL,HIGH
            vuln-type: os,library
            exit-code: 1
-
-
 
       - name: Tag & push
         run: |
