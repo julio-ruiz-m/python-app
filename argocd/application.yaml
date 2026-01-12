@@ -7,14 +7,11 @@ metadata:
     argocd-image-updater.argoproj.io/image-list: |
       python-app=512897090915.dkr.ecr.us-east-1.amazonaws.com/python-app
     
-    # Specify the update strategy explicitly
-    argocd-image-updater.argoproj.io/python-app.update-strategy: semver
+    # Use 'newest-build' strategy which picks the newest by timestamp
+    argocd-image-updater.argoproj.io/python-app.update-strategy: newest-build
     
     # Allow tags matching commit SHAs (40 hex characters)
     argocd-image-updater.argoproj.io/python-app.allow-tags: regexp:^[a-f0-9]{40}$
-    
-    # Since you're using commit SHAs, use semver with a constraint to match any
-    argocd-image-updater.argoproj.io/python-app.image-tag: ~0.0
     
     argocd-image-updater.argoproj.io/write-back-method: git
     
